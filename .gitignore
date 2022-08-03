@@ -1,0 +1,13 @@
+.DS_Store
+passenger.3000.log
+passenger.3000.pid.lock
+client/node_modules
+client/passsenger.3000.log
+client/passenger.3000.pid.lock
+client/.DS_Store
+client/src/.DS_Store
+client/src/components/.DS_Store
+app/node_modules
+app/config.env
+app/passenger.3000.log
+app/passenger.3000.pid.lock

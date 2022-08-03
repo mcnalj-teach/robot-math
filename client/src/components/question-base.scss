@@ -1,0 +1,42 @@
+@use '../App.scss' as *;
+
+html {
+  background-color: $background;
+  color: $textWhite;
+}
+
+body, #questionArea {
+  background-color: $background;
+  color: $textWhite;
+}
+
+h3 {
+  color: $textWhite;
+}
+
+#submitButton {
+  color: $background;
+  font-size: 1.2em;
+}
+
+.form-control:hover {
+  outline-style: solid;
+  outline-width: medium;
+  outline-color: $primary;
+}
+#instructions {
+  font-size: 1.7em;
+}
+
+#prompt, #answerInput {
+  font-size: 5em;
+}
+
+#answerInput {
+  color: $background;
+  background-color: $textWhite;
+}
+
+#answerFeedback {
+  font-size: 1.5em;
+}

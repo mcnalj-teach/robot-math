@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Color Palette</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    /* :root {
+      --blue: ##161F30;
+      --dark-midnight: #08113B;
+      --midnight: #191970;
+      --main-bg-color: #114155;
+      --jumbo-bg-color: #98B8FA;
+      --nav-bg-color: #7C241B;
+      --highlight-color1: #D1FA7F;
+      --highlight-color2: #3B97B6;;
+      --highlight-color3: #D1FA7F;
+      --highlight-color4: #D1FA7F;
+      --text-blue-gray: #CCDFEC;
+      --text-dark-gray: #303030;
+      --text-medium-gray: #C0C0C0;
+      --text-light-gray: #FFFFFF;
+      --text-dark: #FFFFFF;
+    } */
+
+    :root {
+      --blue: #161F30;
+      --dark-midnight: #08113B;
+      --midnight: #191970;
+      --dark-midnight-rgb: rgb(8, 17, 49);
+      --main-bg-color: var(--dark-midnight-rgb);
+
+      --jumbo-bg-color: #98B8FA;
+      --nav-bg-color: #7C241B;
+      --highlight-color1: #D1FA7F;
+      --highlight-color2: #3B97B6;;
+      --highlight-color3: #D1FA7F;
+      --highlight-color4: #D1FA7F;
+      --text-blue-gray: #CCDFEC;
+      --text-dark-gray: #303030;
+      --text-medium-gray: #C0C0C0;
+      --text-light-gray: #FFFFFF;
+      --text-dark: #FFFFFF;
+    }
+    #jumbo {
+      background-color: var(--jumbo-bg-color);
+    }
+    #headline {
+      font-size: 36px;
+      color: var(--text-blue-gray);
+    }
+    .subheading {
+      color: var(--text-medium-gray);
+      font-size: 26px;
+    }
+    nav {
+      background-color: var(--nav-bg-color);
+    }
+    li {
+
+    }
+    a {
+
+    }
+    body {
+      background-color: var(--main-bg-color);
+    }
+    #rowContainer {
+
+
+    }
+    .row {
+
+    }
+    .col-sm-4 {
+
+    }
+    h3 {
+      color: var(--highlight-color1);
+    }
+    .rowText {
+      color: var(--text-medium-gray);
+    }
+    .btn {
+      background-color: var(--highlight-color2);
+      color: var(--text-dark-gray);
+    }
+
+  </style>
+</head>
+<body>
+
+<div id="jumbo" class="container-fluid p-5 text-white text-center">
+  <h1 id="headline">Color Tester</h1>
+  <p class="subheading">Use this to experiment with a color palette.</p>
+  <p class="subheading">I should be using LESS and CSS variables.</p>
+</div>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <div class="container-fluid">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">Home</a>
+      </li>
+     <li class="nav-item">
+        <a class="nav-link" href="#">Topic 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Topic 2</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Topic 3</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="about.html">About</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div id="rowContainer" class="container mt-5">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3 class="columnHeading">Column 1</h3>
+      <p class="rowText">Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+      <p class="rowText">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>Column 2</h3>
+      <p class="rowText">Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+      <p class="rowText">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    </div>
+    <div class="col-sm-4">
+      <h3>Column 3</h3>
+      <p class="rowText">Lorem ipsum dolor sit amet, consectetur adipisicing elit...</p>
+      <p class="rowText">Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris...</p>
+    </div>
+  </div>
+  <button class="btn">Get Answer!</button>
+</div>
+
+</body>
+</html>

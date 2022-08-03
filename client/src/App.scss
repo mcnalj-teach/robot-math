@@ -1,0 +1,73 @@
+
+//  backgrounds
+$oliveGreen: #494D17;
+$oliveDarkerGreen: #4E4611;
+$burntOrange: #D75805;
+$plumPurple: #740F12;
+$purpleGray: #7C748C;
+$lightPurple: #DEEEFB;
+
+
+//text
+$textTan: #E6DFBB;
+$textTanGreen: #E1E4BE;
+$textGray: #C8CEC6;
+$textWhite: #E7E7E7;
+$textSilver: #ADADAD;
+
+$myColor: #003348;
+
+//subtler highlights
+$yellowGold: #FBB441;
+$slateGray: #A0B2CC;
+$funYellow: #FFC508;
+
+//bright highlights
+$redPink:#FF0591;
+$peptoPink: #EDA5EA;
+$lightPurple: #AA93FF;
+$orangeOrRed: #E84D00;
+$limeGreen: #A3D31B;
+$limeGreeDarkerHighlight: #9C9D29;
+
+// navbackground
+$burntRed: #722400;
+$burnterRed: #773521;
+$brownThatGivesWeightToLightPurple: #4B3027;
+
+// successButton
+$paleGreen: #B0A75F;
+$limeGreen: #B4BA21;
+
+$primary: $limeGreen; // buttons and progress
+// $secondary: #D56C33; // orange
+$secondary: $limeGreen; // orange
+$success: $limeGreen; // button
+// $danger: #BD533F;  // red
+$danger: $limeGreen;  // red
+$warning: yellow;
+$info: $purpleGray; // progress and score (dark blue), maybe text, maybe html
+$light: $slateGray;  // sand tan
+$dark: $brownThatGivesWeightToLightPurple; // nav background
+$white: $textWhite;
+$background: #003348;
+$color: $textWhite;
+
+// kinda close to bootstrap defaults
+// $primary: #00348; // dark blue
+// $secondary: #D56C33; // orange
+// $success: #77925F; // dark green
+// $danger: #BD533F;  // red
+// $warning: yellow;
+// $info: #93DBD4; // aqua /sky blue
+// $light: #D2B278;  // sand tan
+// $dark: black;
+// $white: white;
+
+
+
+
+
+
+
+@import '~bootstrap/scss/bootstrap.scss';
