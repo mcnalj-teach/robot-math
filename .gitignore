@@ -1,6 +1,7 @@
 .DS_Store
 passenger.3000.log
 passenger.3000.pid.lock
+client/build
 client/node_modules
 client/passsenger.3000.log
 client/passenger.3000.pid.lock
