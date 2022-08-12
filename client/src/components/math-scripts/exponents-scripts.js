@@ -280,8 +280,220 @@ function setDenominator() {
   let denominator = Math.floor((Math.random() * 7 ) +2 );
   return denominator;
 }
+// These four are for rewriting Negative Exponents so they are easy to plug into.
+function rewriteNegativeExponentNoCoefficient(minExponent = 1, maxExponent = 12) {
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `x^{-${exponent}}`;
+  let answerLatex = `\\frac{1}{x^${exponent}}`;
+  return [questionLatex, answerLatex];
+}
+
+function rewriteNegativeExponentWithIntegerCoefficient(minCoefficient = 1, maxCoefficient = 9, minExponent = 1, maxExponent = 7, percentNegative = 40) {
+  let coefficient = getRandomIntInclusive(minCoefficient, maxCoefficient);
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `${coefficient}x^{-${exponent}}`;
+  console.log(`This is question latex ${questionLatex}`);
+  let answerLatex = `\\frac{${coefficient}}{x^${exponent}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  // handle case where denominator is x^1
+  answerLatex = answerLatex.replace(/x\^1/, 'x');
+  return [questionLatex, answerLatex];
+}
+
+function rewriteNegativeExponentWithFractionalCoefficient(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponent = 1, maxExponent = 7, percentNegative = 40) {
+  let [coefficientNum, coefficientDenom] = generateReducedFraction(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom);
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `\\frac{${coefficientNum}x^{-${exponent}}}{${coefficientDenom}}`;
+  let answerLatex = `\\frac{${coefficientNum}}{${coefficientDenom}x^${exponent}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  // handle case where denominator is x^1
+  answerLatex = answerLatex.replace(/x\^1/, 'x');
+  return [questionLatex, answerLatex];
+}
+
+function rewriteNegativeExponents(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponent = 1, maxExponent = 7, percentNegative = 40, coefficientThreshold = 3, fractionThreshold = 6, randomThreshold = 9, questionsCorrect = 0, ) {
+  let questionLatex = "";
+  let answerLatex = "";
+  let choice = 1;
+  // if (questionsCorrect < coefficientThreshold) {
+  //   [questionLatex, answerLatex] = rewriteNegativeExponentNoCoefficient(minExponent, maxExponent)
+  // } else if (questionsCorrect >= coefficientThreshold && questionsCorrect < fractionThreshold) {
+  //   [questionLatex, answerLatex] = rewriteNegativeExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+  // } else if (questionsCorrect >= fractionThreshold && questionsCorrect < randomThreshold) {
+  //   [questionLatex, answerLatex] = rewriteNegativeExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+  // } else {
+    choice = getRandomIntInclusive(1, 3);
+    if (choice == 1) {
+      [questionLatex, answerLatex] = rewriteNegativeExponentNoCoefficient(minExponent, maxExponent);
+    } else if (choice == 2) {
+      [questionLatex, answerLatex] = rewriteNegativeExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minExponent, maxExponent, percentNegative)
+    } else {
+      [questionLatex, answerLatex] = rewriteNegativeExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+    }
+  // }
+  return [questionLatex, answerLatex]
+}
+
+// These four are for rewriting fractional exponents into radicals so they are easy to plug in to.
+function rewriteFractionalExponentNoCoefficient(minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5) {
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  console.log(exponentNum, exponentDenom)
+  let questionLatex = `x^{\\frac{${exponentNum}}{${exponentDenom}}}`;
+  let answerLatex = `\\sqrt[${exponentDenom}]{x^${exponentNum}}`;
+  answerLatex = answerLatex.replace(/x\^1/, 'x');
+  console.log(questionLatex);
+  return [questionLatex, answerLatex];
+}
+
+function rewriteFractionalExponentWithIntegerCoefficient(minCoefficient = 1, maxCoefficient = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40) {
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  let coefficient = getRandomIntInclusive(minCoefficient, maxCoefficient);
+  let questionLatex = `${coefficient}x^{\\frac{${exponentNum}}{${exponentDenom}}}`;
+  let answerLatex = `${coefficient}\\sqrt[${exponentDenom}]{x^${exponentNum}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function rewriteFractionalExponentWithFractionalCoefficient(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40) {
+  let [coefficientNum, coefficientDenom] = generateReducedFraction(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom);
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  let questionLatex = `\\frac{${coefficientNum}x^{\\frac{${exponentNum}}{${exponentDenom}}}}{${coefficientDenom}}`;
+  let answerLatex = `\\frac{${coefficientNum}\\sqrt[${exponentDenom}]{x^${coefficientNum}}}}{${coefficientDenom}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function rewriteFractionalExponents(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40, coefficientThreshold = 3, fractionThreshold = 6, randomThreshold = 9, questionsCorrect = 0, ) {
+  let questionLatex = "";
+  let answerLatex = "";
+  let choice = getRandomIntInclusive(1, 3);
+  if (choice == 1) {
+    console.log("choice is 1");
+    [questionLatex, answerLatex] = rewriteFractionalExponentNoCoefficient(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  } else if (choice == 2) {
+    console.log("choice is 2");
+    [questionLatex, answerLatex] = rewriteFractionalExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom, percentNegative);
+  } else {
+    console.log("choice is 3");
+    [questionLatex, answerLatex] = rewriteFractionalExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom, percentNegative);
+  }
+  return [questionLatex, answerLatex]
+}
+
+
+// These four are for rewriting using negative exponents in preparation for taking the derivative.
+function useNegativeExponentNoCoefficient (minExponent = 1, maxExponent = 12, percentNegative = 40) {
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `\\frac{1}{x^{-${exponent}}}`;
+  let answerLatex = `x^{-${exponent}}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative)
+  questionLatex = questionLatex.replace(/x\^1/, 'x');
+  return [questionLatex, answerLatex];
+}
+
+function useNegativeExponentWithIntegerCoefficient(minCoefficient = 1, maxCoefficient = 9, minExponent = 1, maxExponent = 7, percentNegative = 40) {
+  let coefficient = getRandomIntInclusive(minCoefficient, maxCoefficient);
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `\\frac{${coefficient}}{x^${exponent}}`;
+  let answerLatex = `${coefficient}x^{-${exponent}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  // handle case where denominator is x^1
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function useNegativeExponentWithFractionalCoefficient(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponent = 1, maxExponent = 7, percentNegative = 40) {
+  let [coefficientNum, coefficientDenom] = generateReducedFraction(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom);
+  let exponent = getRandomIntInclusive(minExponent, maxExponent);
+  let questionLatex = `\\frac{${coefficientNum}}{${coefficientDenom}x^${exponent}}`;
+  let answerLatex = `\\frac{${coefficientNum}x^{-${exponent}}}{${coefficientDenom}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  // handle case where denominator is x^1
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function useNegativeExponents(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponent = 1, maxExponent = 7, percentNegative = 40, coefficientThreshold = 3, fractionThreshold = 6, randomThreshold = 9, questionsCorrect = 0, ) {
+  let questionLatex = "";
+  let answerLatex = "";
+  let choice = 1;
+  // if (questionsCorrect < coefficientThreshold) {
+  //   [questionLatex, answerLatex] = useNegativeExponentNoCoefficient(minExponent, maxExponent)
+  // } else if (questionsCorrect >= coefficientThreshold && questionsCorrect < fractionThreshold) {
+  //   [questionLatex, answerLatex] = useNegativeExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+  // } else if (questionsCorrect >= fractionThreshold && questionsCorrect < randomThreshold) {
+  //   [questionLatex, answerLatex] = useNegativeExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+  // } else {
+    // choice = getRandomIntInclusive(1, 3);
+    // if (choice == 1) {
+    //   console.log("choice is 1");
+    //   [questionLatex, answerLatex] = useNegativeExponentNoCoefficient(minExponent, maxExponent, percentNegative);
+    // } else if (choice == 2) {
+    //   console.log("choice is 2");
+    //   [questionLatex, answerLatex] = useNegativeExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minExponent, maxExponent, percentNegative)
+    // } else {
+    //   console.log("choice is 3");
+    //   [questionLatex, answerLatex] = useNegativeExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponent, maxExponent, percentNegative)
+    // }
+  //}
+  return [questionLatex, answerLatex]
+}
+
+
+// These four are for rewriting using fractional exponents in preparation for taking the derivative.
+function useFractionalExponentNoCoefficient(minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40) {
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  let questionLatex = `\\sqrt[${exponentDenom}]{x^${exponentNum}}`;
+  let answerLatex = `x^{\\frac{${exponentNum}}{${exponentDenom}}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex);
+  questionLatex = questionLatex.replace(/x\^1/, 'x');
+  return [questionLatex, answerLatex];
+}
+
+function useFractionalExponentWithIntegerCoefficient(minCoefficient = 1, maxCoefficient = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40) {
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  let coefficient = getRandomIntInclusive(minCoefficient, maxCoefficient);
+  let questionLatex = `${coefficient}\\sqrt[${exponentDenom}]{x^${exponentNum}}`;
+  let answerLatex = `${coefficient}x^{\\frac{${exponentNum}}{${exponentDenom}}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function useFractionalExponentWithFractionalCoefficient(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40) {
+  let [coefficientNum, coefficientDenom] = generateReducedFraction(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom);
+  let [exponentNum, exponentDenom] = generateReducedFraction(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  let questionLatex = `\\frac{${coefficientNum}\\sqrt[${exponentDenom}]{x^${coefficientNum}}}}{${coefficientDenom}}`;
+  let answerLatex = `\\frac{${coefficientNum}x^{\\frac{${exponentNum}}{${exponentDenom}}}}{${coefficientDenom}}`;
+  [questionLatex, answerLatex] = maybeNegativeCoefficient(questionLatex, answerLatex, percentNegative);
+  [questionLatex, answerLatex] = applyRegexFixes(questionLatex, answerLatex);
+  return [questionLatex, answerLatex];
+}
+
+function useFractionalExponents(minCoefficientNum = 1, maxCoefficientNum = 9, minCoefficientDenom = 2, maxCoefficientDenom = 9, minExponentNum = 1, maxExponentNum = 7, minExponentDenom = 2, maxExponentDenom = 5, percentNegative = 40, coefficientThreshold = 3, fractionThreshold = 6, randomThreshold = 9) {
+  let questionLatex = "";
+  let answerLatex = "";
+  let choice = getRandomIntInclusive(1, 3);
+  // if (choice == 1) {
+  //   console.log("choice is 1");
+  //   [questionLatex, answerLatex] = useFractionalExponentNoCoefficient(minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom);
+  // } else if (choice == 2) {
+  //   console.log("choice is 2");
+  //   [questionLatex, answerLatex] = useFractionalExponentWithIntegerCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom, percentNegative);
+  // } else if (choice ==3) {
+  //   console.log("choice is 3");
+  //   [questionLatex, answerLatex] = useFractionalExponentWithFractionalCoefficient(minCoefficientNum, maxCoefficientNum, minCoefficientDenom, maxCoefficientDenom, minExponentNum, maxExponentNum, minExponentDenom, maxExponentDenom, percentNegative);
+  // }
+  return [questionLatex, answerLatex]
+}
 
 export {
-  getPrompt,
-  rewriteForFindingDerivatives,
+  // getPrompt,
+  // rewriteForFindingDerivatives,
+  rewriteNegativeExponents,
+  rewriteFractionalExponents,
+  useNegativeExponents,
+  useFractionalExponents,
 }

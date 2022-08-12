@@ -31,7 +31,7 @@ export default function NavBar() {
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/exponents">
+                <NavLink className="nav-link" to="/question-base/exponents">
                    Exponents
                 </NavLink>
               </li>

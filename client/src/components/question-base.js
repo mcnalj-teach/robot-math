@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ProgressBar} from 'react-bootstrap';
+import { ProgressBar, Button, Offcanvas} from 'react-bootstrap';
 import { addStyles, StaticMathField, EditableMathField } from 'react-mathquill'
 import { Link } from "react-router-dom";
 import { useParams } from "react-router";
@@ -7,8 +7,12 @@ import '../App.scss';
 import '../index.scss';
 import './question-base.scss';
 import {
-  getPrompt,
-  rewriteForFindingDerivatives
+//  getPrompt,
+//  rewriteForFindingDerivatives,
+  rewriteNegativeExponents,
+  rewriteFractionalExponents,
+  useNegativeExponents,
+  useFractionalExponents,
 } from './math-scripts/exponents-scripts.js'
 import {
   simplePowerRule,
@@ -21,7 +25,6 @@ import {
 } from './math-scripts/derivative-scripts.js'
 
 import { getRandomIntInclusive } from './math-scripts/utilities-scripts.js';
-
 
 const questionTopics = {
   "derivatives": [
@@ -54,11 +57,19 @@ const questionTopics = {
   "exponents": [
     {
       topicId: 10,
-      questionEngine: getPrompt,
+      questionEngine: rewriteNegativeExponents,
     },
     {
       topicId: 20,
-      questionEngine: rewriteForFindingDerivatives,
+      questionEngine: rewriteFractionalExponents,
+    },
+    {
+      topicId: 40,
+      questionEngine: useNegativeExponents,
+    },
+    {
+      topicId: 40,
+      questionEngine: useFractionalExponents,
     },
   ],
 }
@@ -66,14 +77,14 @@ addStyles();
 
 const userId = "123mcnalj";
 const startTime = new Date();
-const topicUnit = "derivatives";
 
 export default function QuestionBase() {
   const params = useParams()
   let unit = params.id;
 
   let questionEngine = questionTopics[unit][0].questionEngine;
-  console.log(questionEngine);
+  let standard = 12
+
 
 // This is for the first topic in a unit
   // let topicObj = {
@@ -145,25 +156,23 @@ export default function QuestionBase() {
 //   console.log(value)
 // })
 
-
-// console.log(atLast);
-// console.log(unitTopicsPromise); // this is fulfilled pending Promise
-// console.log(unitTopics); // this is fulfilled pending Promise
-  let [questionLatex, answerLatex] = questionEngine();
+  console.log('setting questionState');
+//  let [questionLatex, answerLatex] = questionEngine();
   const [questionState, setQuestionState] = useState({
-    questionEngine: simplePowerRule,
-    questionLatex: questionLatex,
-    answerLatex: answerLatex,
+    questionEngine: questionEngine,
+    questionLatex: '',
+    answerLatex: '',
     getNextQuestion: next,
     questionsAttempted: 0,
     questionsCorrect: 0,
     questionsIncorrect: 0,
     questionsStreak: 0,
-    questionsToMeet: 2,
+    questionsToMeet: standard,
     progressBar: 0,
-    doneWithTopic: done
+    doneWithTopic: done,
+    questionTopic: '',
+    questionPrompt: '',
   });
-
 
   useEffect(() => {
     async function getTopics(unitName) {
@@ -175,8 +184,29 @@ export default function QuestionBase() {
       }
       const topics = await response.json();
       const unitTopics = topics.unitTopics;
-      console.log(unitTopics);
       setTopics({topicId: unitTopics[0].topicId, topicsArray: unitTopics});
+// This was added. Copied used state and added this additional setState
+      console.log("set state here?")
+      let [questionLatex, answerLatex] = questionEngine();
+      setQuestionState(
+        {
+          questionEngine: questionEngine,
+          questionLatex: questionLatex,
+          answerLatex: answerLatex,
+          getNextQuestion: next,
+          questionsAttempted: 0,
+          questionsCorrect: 0,
+          questionsIncorrect: 0,
+          questionsStreak: 0,
+          questionsToMeet: unitTopics[0].topicData.standard,
+          progressBar: 0,
+          doneWithTopic: done,
+          questionTopic: unitTopics[0].topicData.displayName,
+          questionPrompt: unitTopics[0].topicData.prompt,
+        }
+      )
+
+
     }
 
     getTopics(unit);
@@ -187,10 +217,11 @@ export default function QuestionBase() {
 
 
   function next(liftedState){
-      //let [questionLatex, answerLatex] = simplePowerRuleWithNegativeExponentAndIntegerCoefficient(1, 5, 2, 7);
+      console.log(`unit is ${unit}`)
+
       let [questionLatex, answerLatex] = questionEngine();
       setQuestionState({
-        questionEngine: simplePowerRule,
+        questionEngine: questionEngine,
         questionLatex: questionLatex,
         answerLatex: answerLatex,
         getNextQuestion: next,
@@ -198,9 +229,11 @@ export default function QuestionBase() {
         questionsCorrect: liftedState.questionsCorrect,
         questionsIncorrect: liftedState.questionsIncorrect,
         questionsStreak: liftedState.questionsStreak,
-        questionsToMeet: 2,
+        questionsToMeet: questionState.questionsToMeet,
         progressBar: Math.round((liftedState.questionsCorrect/questionState.questionsToMeet)*100),
         doneWithTopic: done,
+        questionTopic: questionState.questionTopic,
+        questionPrompt: questionState.questionPrompt,
       });
   }
 
@@ -246,14 +279,14 @@ export default function QuestionBase() {
     // });
   }
   const changeEngine = function (e) {
-    console.log(e.currentTarget.dataset.key);
     let topicId = e.currentTarget.dataset.key;
     let questionTopic = questionTopics[unit].find((topic) => topic.topicId == topicId);
     console.dir(questionTopic);
+    console.dir(topics);
     let questionEngine = questionTopic.questionEngine;
-    console.log(questionEngine);
     let topicArrayIndex = topics.topicsArray.findIndex((topic)=>topic.topicId==topicId);
-    let questionsToMeet = topics.topicsArray[topicArrayIndex].topicData.standard;
+    console.log(`topic array index ${topicArrayIndex}`);
+    let standard = (topics.topicsArray[topicArrayIndex].topicData.standard);
     let [questionLatex, answerLatex] = questionEngine();
     setQuestionState({
       questionEngine: questionEngine,
@@ -264,32 +297,28 @@ export default function QuestionBase() {
       questionsCorrect: 0,
       questionsIncorrect: 0,
       questionsStreak: 0,
-      questionsToMeet: questionsToMeet,
+      questionsToMeet: standard,
       progressBar: 0,
-      doneWithTopic: done
+      doneWithTopic: done,
+      questionTopic: topics.topicsArray[topicArrayIndex].topicData.displayName,
+      questionPrompt: topics.topicsArray[topicArrayIndex].topicData.prompt,
     });
   }
 
   function topicsList() {
-    console.log(topics)
     return topics.topicsArray.map((topic) => {
       return (
         <div className="row" data-key={topic.topicId} key={topic.topicId} onClick={changeEngine}>
-          <p>{topic.topicData.displayName}</p>
+          <a>{topic.topicData.displayName}</a>
         </div>
       )
     })
   }
 
   return (
-    <div>
-      <div>
-        {topicsList(topics)}
-      </div>
-      <p>{questionState.progressBar}</p>
-
-      <h2 className="text-center mt-4">{topics.topicsArray[0].topicData.displayName}</h2>
-              <p id="instructions" className="col-sm-12">{topics.topicsArray[0].topicData.prompt}</p>
+    <div className="row">
+      <h2 className="text-center mt-4">{questionState.questionTopic}</h2>
+              <p id="instructions" className="col-sm-12">{questionState.questionPrompt}</p>
       <div className="row">
         <p id="prompt" className="col-sm-8 offset-2 text-center mt-2">
           <StaticMathField>{ questionState.questionLatex }</StaticMathField>
@@ -298,9 +327,10 @@ export default function QuestionBase() {
         <AnswerForm
             questionState={questionState}
         />
-      <div className="progressBar mt-4 col-8 offset-2">
-        <ProgressBar now={questionState.progressBar} label={`${questionState.progressBar}%`} />
+      <div className="progressBar mt-4 mb-4 col-8 offset-2">
+        <ProgressBar now={questionState.progressBar} label={`${questionState.progressBar}%`} max='100'/>
       </div>
+        <Sidebar function={topicsList} />
     </div>
   );
 }
@@ -400,8 +430,9 @@ function AnswerForm(props) {
               id="answerInput"
               className="form-control col-sm-6 text-center"
               aria-describedby="answer input"
-              latex='\\sqrt[4]{x^3}'
-              value={props.questionState.answerLatex} // does nothing?
+              latex={userObj.userAnswer}
+              value={userObj.userAnswer} // does nothing?
+              placeholder={userObj.userAnwer} //does nothing?
               onChange={(mathField)=>updateSituation({userAnswer: mathField.latex()})}
             />
         </div>
@@ -414,4 +445,30 @@ function AnswerForm(props) {
       </div>
     </form>
   )
+}
+
+
+function Sidebar(props) {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  return (
+    <>
+      <Button variant="primary" onClick={handleShow} className="col-sm-4 offset-4" id="changeTopics">
+        CHANGE TOPICS
+      </Button>
+
+      <Offcanvas show={show} onHide={handleClose} style={{backgroundColor: "#E7E7E7", color: "#003348", paddingTop: "2em", fontSize: "1.3em"}}>
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title style={{fontSize: "1.6em"}}>TOPICS</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          {props.function()}
+
+        </Offcanvas.Body>
+      </Offcanvas>
+    </>
+  );
 }
